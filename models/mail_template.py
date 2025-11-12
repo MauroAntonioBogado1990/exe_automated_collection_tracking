@@ -1,15 +1,19 @@
-from odoo import models, api
+from odoo import models
 
-class MailTemplate(models.Model):
-    _inherit = 'mail.template'
+class AccountFollowupLine(models.Model):
+    _inherit = 'account_followup.followup.line'
 
-    @api.model
-    def generate_email(self, res_ids, fields):
-        res = super().generate_email(res_ids, fields)
-        for record_id in res_ids:
-            partner = self.env['res.partner'].browse(record_id)
-            cc_emails = ','.join(
-                partner.child_ids.filtered(lambda c: c.is_account_responsible and c.email).mapped('email')
-            )
-            res[record_id]['email_cc'] = cc_emails
-        return res
+    def _get_followup_mail_template_context(self, partner):
+        """Extendemos el contexto del template para incluir CC a responsables"""
+        context = super()._get_followup_mail_template_context(partner)
+
+        # Buscar contactos hijos responsables
+        cc_emails = ','.join(
+            partner.child_ids.filtered(lambda c: c.is_account_responsible and c.email).mapped('email')
+        )
+
+        # Agregar al contexto si hay responsables
+        if cc_emails:
+            context['email_cc'] = cc_emails
+
+        return context
