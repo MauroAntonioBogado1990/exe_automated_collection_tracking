@@ -1,6 +1,6 @@
 {
     'name': 'Exe Automated Collection Tracking',
-    'version': '17.0',
+    'version': '18.0',
     'category': 'Tools',
     'author':'Mauro Bogado,Exemax',
     'summary': 'Modulo para el seguimiento automatizado de cobranzas',
